@@ -1,12 +1,15 @@
 package ml.universo42.abatedouro.adapters;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.annimon.stream.Stream;
 
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class MesAdapter extends BaseAdapter {
 
     public MesAdapter(Jornada jornada, Activity act) {
         this.jornada = jornada;
-        this.list = jornada.getMeses();
+        this.list = Stream.of(jornada.getMeses()).sorted(Mes.REVERSE_COMPARATOR).toList();
         this.act = act;
     }
 
@@ -56,17 +59,16 @@ public class MesAdapter extends BaseAdapter {
 
         if (position == list.size() - 1) {
             LinearLayout linearLayout = listaLayout.findViewById(R.id.linear_layout_lista_mes);
-            linearLayout.setPadding(0, 0, 0, 15);
-        } else if (position == 0) {
-            LinearLayout linearLayout = listaLayout.findViewById(R.id.linear_layout_top_lista_mes);
-            linearLayout.setPadding(0, 20, 0, 0);
+            linearLayout.setPadding(0, 0, 0, 10);
         }
+
+        listaLayout.setBackgroundResource((position + 1) % 2 == 0 ? R.color.list_bg_1 : R.color.list_bg_2);
 
         return listaLayout;
     }
 
     private void setText(View view, int txtViewId, String value) {
-        TextView txtView = (TextView) view.findViewById(txtViewId);
+        TextView txtView = view.findViewById(txtViewId);
         txtView.setText(value);
     }
 }

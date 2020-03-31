@@ -1,21 +1,30 @@
 package ml.universo42.jornada.model;
 
+import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Dia implements Comparable<Dia> {
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("HH:mm");
+
     private int diaMes;
     private List<Horario> horarios;
 
+    public Dia(int diaMes) {
+        this(diaMes, new ArrayList<>());
+    }
+
     public Dia(int diaMes, List<Horario> horarios) {
         this.diaMes = diaMes;
-        this.horarios = horarios;
+        this.horarios = new ArrayList(horarios);
     }
 
     public int getDiaMes() {
@@ -27,6 +36,8 @@ public class Dia implements Comparable<Dia> {
     }
 
     public List<Turno> getTurnos() {
+        List<Horario> horarios = Stream.of(this.horarios).sorted().toList();
+
         int max = horarios.size() % 2 == 0 ? horarios.size() : horarios.size() - 1;
         List<Turno> turnos = new ArrayList<>();
 
@@ -54,6 +65,41 @@ public class Dia implements Comparable<Dia> {
         long minutosDiaTrabalho = 60 * jornadaDiaria;
 
         return getMinutosDia() - minutosDiaTrabalho;
+    }
+
+    public boolean contains(LocalTime time) {
+        return Stream.of(horarios)
+                .map(h -> h.getTime().toString(FORMATTER))
+                .toList().contains(time.toString(FORMATTER));
+    }
+
+    public Optional<Horario> add(LocalTime time) {
+        Horario newOne = null;
+
+        if (!contains(time)) {
+            newOne = new Horario(time);
+            horarios.add(newOne);
+        }
+
+        return Optional.ofNullable(newOne);
+    }
+
+    public Optional<Horario> remove(LocalTime time) {
+        return Stream.of(horarios)
+                .filter(h -> h.getTime().toString(FORMATTER).equals(time.toString(FORMATTER)))
+                .findFirst()
+                .map(h -> {
+                    horarios.remove(h);
+                    return h;
+                });
+    }
+
+    public Optional<Horario> update(LocalTime oldTime, LocalTime newTime) {
+        if (!contains(newTime)) {
+            return remove(oldTime).flatMap(h -> add(newTime));
+        }
+
+        return Optional.empty();
     }
 
     @Override

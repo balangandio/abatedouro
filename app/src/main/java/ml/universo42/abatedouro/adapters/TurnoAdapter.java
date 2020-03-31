@@ -56,6 +56,8 @@ public class TurnoAdapter extends BaseAdapter {
             setText(listaLayout, R.id.txt_saldo_turno, " ");
         }
 
+        listaLayout.setBackgroundResource((position + 1) % 2 == 0 ? R.color.list_bg_1 : R.color.list_bg_2);
+
         return listaLayout;
     }
 

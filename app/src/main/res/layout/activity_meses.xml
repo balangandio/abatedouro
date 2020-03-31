@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/black"
-    tools:context="ml.universo42.abatedouro.MainActivity">
+    tools:context="ml.universo42.abatedouro.MesesActivity">
+
+    <TextView
+        android:text="meses"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:background="@color/colorMyGreen"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp" />
 
     <ListView
         android:id="@+id/list_meses"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@drawable/list_divider"
         android:dividerHeight="1px"
         android:fitsSystemWindows="true" />
 

@@ -1,9 +1,16 @@
 package ml.universo42.jornada;
 
+import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
+
+import org.joda.time.LocalDateTime;
+import org.joda.time.YearMonth;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ml.universo42.jornada.model.Mes;
@@ -14,7 +21,7 @@ public class Jornada implements Serializable {
     private int jornadaDiaria = 8;
 
     public Jornada(List<Mes> meses) {
-        this.meses = meses;
+        this.meses = new ArrayList<>(meses);
     }
 
     public Jornada(List<Mes> meses, int jornadaDiaria) {
@@ -23,7 +30,7 @@ public class Jornada implements Serializable {
     }
 
     public List<Mes> getMeses() {
-        return meses;
+        return Collections.unmodifiableList(meses);
     }
 
     public int getJornadaDiaria() {
@@ -53,6 +60,33 @@ public class Jornada implements Serializable {
         }
 
         return 0;
+    }
+
+    public Optional<Mes> getMes(YearMonth yearMonth) {
+        return Stream.of(meses).filter(mes -> mes.getMes().equals(yearMonth)).findFirst();
+    }
+
+
+    public void add(LocalDateTime time) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/yyyy");
+        YearMonth yearMonth = YearMonth.parse(time.toString(formatter), formatter);
+
+        Optional<Mes> mesOp = getMes(yearMonth);
+
+        Mes mes = mesOp.orElse(new Mes(yearMonth));
+
+        mes.addDia(time.getDayOfMonth(), time.toLocalTime());
+
+        if (mesOp.isEmpty()) {
+            meses.add(mes);
+        }
+    }
+
+    public Optional<Mes> remove(Mes mes) {
+        return getMes(mes.getMes()).map(m -> {
+            meses.remove(mes);
+            return m;
+        });
     }
 
 

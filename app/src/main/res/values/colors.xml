@@ -4,4 +4,16 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorMyGreen">#008400</color>
+
+    <color name="colorApp">@color/colorMyGreen</color>
+
+    <color name="list_bg_1">#444141</color>
+    <color name="list_bg_2">#242121</color>
+    <color name="list_divider">#00CDCDCD</color>
+
+    <color name="saldo_neutro">#2E2E2E</color>
+    <color name="saldo_positivo">#008400</color>
+    <color name="saldo_negativo">#F44336</color>
+
+    <color name="btn_danger">#F44336</color>
 </resources>

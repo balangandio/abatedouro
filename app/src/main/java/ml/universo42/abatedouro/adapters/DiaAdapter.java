@@ -59,8 +59,10 @@ public class DiaAdapter extends BaseAdapter {
 
         if (position == list.size() - 1) {
             LinearLayout linearLayout = listaLayout.findViewById(R.id.linear_layout_lista_dia);
-            linearLayout.setPadding(0, 0, 0, 15);
+            linearLayout.setPadding(0, 0, 0, 10);
         }
+
+        listaLayout.setBackgroundResource((position + 1) % 2 == 0 ? R.color.list_bg_1 : R.color.list_bg_2);
 
         return listaLayout;
     }

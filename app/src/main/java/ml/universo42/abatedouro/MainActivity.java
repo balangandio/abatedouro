@@ -1,57 +1,105 @@
 package ml.universo42.abatedouro;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.File;
-import java.util.List;
+import com.annimon.stream.IntStream;
+import com.annimon.stream.Stream;
 
 import ml.universo42.abatedouro.model.Model;
 import ml.universo42.abatedouro.util.DateUtil;
 import ml.universo42.jornada.JornadaFile;
-import ml.universo42.jornada.model.Turno;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AbstractModelActivity {
+    private static final int PERMISSIONS_REQUEST_CODE = 2464;
 
     TextView txtTotal;
-
-    JornadaFile modelFile = new JornadaFile(Constants.MODEL_FILE);
-    Model model;
+    View layoutSaldoJornada;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected int getContentViewRsc() {
+        return R.layout.activity_main;
+    }
 
-        initView();
+    protected void initView() {
+        txtTotal = findViewById(R.id.txt_total);
+        layoutSaldoJornada = findViewById(R.id.saldo_jornada);
+    }
 
-        loadModel();
+    @Override
+    protected void loadModel() {
+        if (checkAndRequestPermissions(new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE })) {
+            super.loadModel();
+        }
+    }
+
+    protected void updateView() {
+        if (model != null) {
+            long saldo = model.getJornada().getSaldoMinutos();
+
+            txtTotal.setText(DateUtil.toStringTime(saldo));
+
+            if (saldo < 0) {
+                layoutSaldoJornada.setBackgroundResource(R.drawable.bg_saldo_negativo);
+            } else if (saldo > 0) {
+                layoutSaldoJornada.setBackgroundResource(R.drawable.bg_saldo_positivo);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSIONS_REQUEST_CODE
+                && IntStream.of(grantResults)
+                    .anyMatch(result -> result == PackageManager.PERMISSION_DENIED)) {
+            finish();
+        } else if (model == null) {
+            super.loadModel();
+            updateView();
+        }
     }
 
     public void onClickSaldo(View view) {
-        Intent intent = new Intent(this, MesesActivity.class);
-
-        intent.putExtra(Constants.MODEL_PARAM, model);
-
-        startActivity(intent);
+        startActivityWithModel(MesesActivity.class);
     }
 
-    private void initView() {
-        txtTotal = (TextView) findViewById(R.id.txt_total);
+    public void onClickRegistrar(View view) {
+        startActivityWithModel(RegistroActivity.class);
     }
 
-    private void loadModel() {
-        this.model = new Model(this.modelFile.load());
+    private boolean checkAndRequestPermissions(String[] permissions) {
+        permissions = Stream.of(permissions)
+                .filter(p -> !checkPermission(p))
+                .toArray(String[]::new);
 
-        updateView();
+        if (permissions.length > 0) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
+            return false;
+        }
+
+        return true;
     }
 
-    private void updateView() {
-        txtTotal.setText(DateUtil.toStringTime(model.getJornada().getSaldoMinutos()));
+    private boolean checkPermission(String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = this.checkSelfPermission(permission);
+            return result == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
     }
 
 }

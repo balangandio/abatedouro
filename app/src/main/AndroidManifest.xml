@@ -24,6 +24,9 @@
         <activity android:name=".MesesActivity"></activity>
         <activity android:name=".MesDetailActivity"></activity>
         <activity android:name=".DiaDetailActivity"></activity>
+        <activity android:name=".RegistroActivity"></activity>
+        <activity android:name=".HorarioActivity"></activity>
+        <activity android:name=".DateEditActivity"></activity>
 
 
     </application>

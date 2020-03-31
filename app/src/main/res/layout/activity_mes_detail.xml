@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/black"
-    tools:context="ml.universo42.abatedouro.MainActivity">
+    tools:context="ml.universo42.abatedouro.MesDetailActivity">
 
     <TextView
         android:id="@+id/txt_detail_mes"
@@ -24,8 +24,19 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="@drawable/list_divider"
         android:dividerHeight="1px"
         android:fitsSystemWindows="true" />
+
+
+    <Button
+        android:id="@+id/btn_remover_mes"
+        android:visibility="gone"
+        android:onClick="onClickRemover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remover"
+        android:textColor="@android:color/white"
+        android:fitsSystemWindows="true"
+        android:background="@color/btn_danger" />
 
 </LinearLayout>

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Abatedouro.iml" filepath="$PROJECT_DIR$/.idea/modules/Abatedouro.iml" group="Abatedouro" />
+      <module fileurl="file://$PROJECT_DIR$/abatedouro.iml" filepath="$PROJECT_DIR$/abatedouro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/abatedouro-app.iml" filepath="$PROJECT_DIR$/app/abatedouro-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jornada/abatedouro-jornada.iml" filepath="$PROJECT_DIR$/jornada/abatedouro-jornada.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Abatedouro/app" />
       <module fileurl="file://$PROJECT_DIR$/jornada/jornada.iml" filepath="$PROJECT_DIR$/jornada/jornada.iml" group="Abatedouro/jornada" />
     </modules>
