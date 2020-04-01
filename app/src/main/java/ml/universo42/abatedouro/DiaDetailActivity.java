@@ -1,11 +1,6 @@
 package ml.universo42.abatedouro;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,14 +11,13 @@ import android.widget.Toast;
 import java.util.List;
 
 import ml.universo42.abatedouro.adapters.TurnoAdapter;
+import ml.universo42.abatedouro.dialogs.HorarioChooserDialog;
 import ml.universo42.abatedouro.model.Model;
-import ml.universo42.abatedouro.util.DateUtil;
 import ml.universo42.jornada.model.Dia;
 import ml.universo42.jornada.model.Horario;
-import ml.universo42.jornada.model.Mes;
 import ml.universo42.jornada.model.Turno;
 
-public class DiaDetailActivity extends AbstractModelActivity implements ListView.OnItemClickListener, DialogInterface.OnClickListener {
+public class DiaDetailActivity extends AbstractModelActivity implements ListView.OnItemClickListener {
 
     TextView txtDia;
     ListView listHorarios;
@@ -83,18 +77,14 @@ public class DiaDetailActivity extends AbstractModelActivity implements ListView
             return;
         }
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setMessage("escolha o horário a ser editado:")
-                .setNegativeButton(DateUtil.toStringTime(selectedTurno.getInicio().getTime()), this)
-                .setPositiveButton(DateUtil.toStringTime(selectedTurno.getFim().getTime()), this)
-                .create();
+        AlertDialog dialog = new HorarioChooserDialog(
+                this,
+                selectedTurno.getInicio(),
+                selectedTurno.getFim(),
+                this::startEditActivity
+        );
 
         dialog.show();
-    }
-
-    @Override
-    public void onClick(DialogInterface dialogInterface, int selectedIndex) {
-        startEditActivity(selectedIndex == -2 ? selectedTurno.getInicio() : selectedTurno.getFim());
     }
 
     private void startEditActivity(Horario horario) {

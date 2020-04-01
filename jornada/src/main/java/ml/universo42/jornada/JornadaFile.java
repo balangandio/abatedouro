@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import ml.universo42.jornada.exceptions.LoadException;
+
 public class JornadaFile {
 
     public File file;
@@ -14,12 +16,16 @@ public class JornadaFile {
         this.file = file;
     }
 
-    public Jornada load() {
+    public Jornada load() throws LoadException {
         if (!file.exists()) {
             return Jornada.empty();
         }
 
-        return JornadaSerial.jsonDeserializer().deserialize(readFile(file));
+        try {
+            return JornadaSerial.jsonDeserializer().deserialize(readFile(file));
+        } catch(IOException e) {
+            throw new LoadException(e);
+        }
     }
 
     public void write(Jornada model) {
@@ -44,17 +50,13 @@ public class JornadaFile {
         }
     }
 
-    private String readFile(File file) {
-        try {
-            Scanner scanner = new Scanner(file);
+    private String readFile(File file) throws IOException {
+        Scanner scanner = new Scanner(file);
 
-            try {
-                return scanner.useDelimiter("\\A").next();
-            } finally {
-                scanner.close();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        try {
+            return scanner.useDelimiter("\\A").next();
+        } finally {
+            scanner.close();
         }
     }
 

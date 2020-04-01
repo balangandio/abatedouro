@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.annimon.stream.IntStream;
@@ -25,6 +26,7 @@ public class MainActivity extends AbstractModelActivity {
 
     TextView txtTotal;
     View layoutSaldoJornada;
+    Button btnRegistrar;
 
     @Override
     protected int getContentViewRsc() {
@@ -34,6 +36,7 @@ public class MainActivity extends AbstractModelActivity {
     protected void initView() {
         txtTotal = findViewById(R.id.txt_total);
         layoutSaldoJornada = findViewById(R.id.saldo_jornada);
+        btnRegistrar = findViewById(R.id.btn_registrar);
     }
 
     @Override
@@ -56,6 +59,8 @@ public class MainActivity extends AbstractModelActivity {
             } else if (saldo > 0) {
                 layoutSaldoJornada.setBackgroundResource(R.drawable.bg_saldo_positivo);
             }
+        } else {
+            btnRegistrar.setVisibility(View.GONE);
         }
     }
 

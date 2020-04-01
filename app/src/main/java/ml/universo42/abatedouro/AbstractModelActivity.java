@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import ml.universo42.abatedouro.model.Model;
 import ml.universo42.jornada.JornadaFile;
+import ml.universo42.jornada.exceptions.LoadException;
 
 public abstract class AbstractModelActivity extends AppCompatActivity {
 
@@ -36,13 +38,21 @@ public abstract class AbstractModelActivity extends AppCompatActivity {
     protected void loadModel() {
         Intent intent = getIntent();
 
-        if (intent.hasExtra(Constants.MODEL_PARAM)) {
-            model = (Model) intent.getSerializableExtra(Constants.MODEL_PARAM);
-        } else {
-            model = new Model(modelFile.load());
-        }
+        try {
+            if (intent.hasExtra(Constants.MODEL_PARAM)) {
+                model = (Model) intent.getSerializableExtra(Constants.MODEL_PARAM);
+            } else {
+                model = new Model(modelFile.load());
+            }
 
-        afterModelLoad(model);
+            afterModelLoad(model);
+        } catch(LoadException e) {
+            Toast.makeText(
+                    this,
+                    "# Erro ao carregar arquivo: " + Constants.MODEL_FILE.getAbsolutePath(),
+                    Toast.LENGTH_SHORT
+            );
+        }
     }
 
     protected void afterModelLoad(Model model) {}

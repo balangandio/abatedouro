@@ -1,8 +1,6 @@
 package ml.universo42.abatedouro;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -10,11 +8,12 @@ import android.widget.Toast;
 
 import org.joda.time.LocalTime;
 
+import ml.universo42.abatedouro.dialogs.ConfirmationDialog;
 import ml.universo42.abatedouro.model.Model;
 import ml.universo42.abatedouro.util.DateUtil;
 import ml.universo42.jornada.model.Dia;
 
-public class HorarioActivity extends AbstractModelActivity implements DialogInterface.OnClickListener {
+public class HorarioActivity extends AbstractModelActivity {
 
     TextView txtHorario;
     NumberPicker hourPicker;
@@ -64,32 +63,25 @@ public class HorarioActivity extends AbstractModelActivity implements DialogInte
         }
 
         diaSelecionado.update(horario, newHorario)
-        .ifPresentOrElse(h -> {
-            Toast.makeText(this, "Atualizado!", Toast.LENGTH_SHORT).show();
-            finishAndReturnModel();
-        }, () -> Toast.makeText(this, "Não foi possível alterar", Toast.LENGTH_SHORT)
-                .show());
+            .ifPresentOrElse(h -> {
+                Toast.makeText(this, "Atualizado!", Toast.LENGTH_SHORT).show();
+                finishAndReturnModel();
+            }, () -> Toast.makeText(this, "Não foi possível alterar", Toast.LENGTH_SHORT)
+                    .show());
     }
 
     public void onClickRemover(View view) {
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setMessage("confirmar remoção do horário?")
-                .setNegativeButton("Cancel", this)
-                .setPositiveButton("Ok", this)
-                .create();
+        AlertDialog dialog = new ConfirmationDialog(this, "confirmar remoção do horário?", confirmed -> {
+            if (confirmed) {
+                diaSelecionado.remove(horario).ifPresentOrElse(h -> {
+                    Toast.makeText(this, "Removido!", Toast.LENGTH_SHORT).show();
+                    finishAndReturnModel();
+                }, () -> Toast.makeText(this, "Não foi possível remover", Toast.LENGTH_SHORT)
+                        .show());
+            }
+        });
 
         dialog.show();
-    }
-
-    @Override
-    public void onClick(DialogInterface dialogInterface, int selectedIndex) {
-        if (selectedIndex == -1) {
-            diaSelecionado.remove(horario).ifPresentOrElse(h -> {
-                Toast.makeText(this, "Removido!", Toast.LENGTH_SHORT).show();
-                finishAndReturnModel();
-            }, () -> Toast.makeText(this, "Não foi possível remover", Toast.LENGTH_SHORT)
-                    .show());
-        }
     }
 
     private void finishAndReturnModel() {
